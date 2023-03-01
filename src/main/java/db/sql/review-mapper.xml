@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	
+	<!-- 리뷰리스트 -->
+	<entry key="selectReviewList">
+		SELECT
+		       REVIEW_NO
+		     , RES_NAME
+		     , REVIEW_CONTENT
+		     , STAR
+		     , TO_CHAR(CREATE_DATE, 'YYYY/MM/DD') "CREATE_DATE"
+		  FROM REVIEW V
+		  JOIN BOOK B ON (V.BOOK_NO = B.BOOK_NO )
+		  JOIN RESTAURANT R ON (B.RES_NO = R.RES_NO)
+		 WHERE V.STATUS = 'Y'
+		 ORDER BY REVIEW_NO DESC  
+	</entry>
+
+	<!-- 리뷰쓰기 -->
+	<entry key="selectBook">
+		SELECT 
+			   RES_NO
+			 , USER_NO
+  		  FROM BOOK
+ 		  WHERE BOOK_NO = ?
+	</entry>
+	
+	<entry key="insertContentReview">
+		INSERT
+		  INTO REVIEW
+		     (
+		       REVIEW_NO
+		     , RES_NO
+		     , BOOK_NO
+		     , USER_NO
+		     , REVIEW_CONTENT
+		     , STAR
+		     ) 
+		VALUES 
+		     (
+		       SEQ_RVNO.NEXTVAL
+		     , ? <!-- 선택한업체번호 -->
+			 , ? <!-- 예약번호 -->
+		     , ? <!-- 로그인한회원번호 -->
+		     , ? <!-- 사용자가입력한내용 -->
+		     , ? <!-- 사용자가선택한별점 -->
+		     )
+	</entry>
+	
+	<!-- 리뷰사진첨부 -->
+	<entry key="insertAttachmentList">
+		INSERT
+		  INTO ATTACHMENT
+		     (
+		       FILE_NO
+		     , REF_BNO
+		     , ORIGIN_NAME
+		     , CHANGE_NAME
+		     , FILE_PATH
+		     , BOARD_TYPE
+		     )
+	    VALUES
+	         (
+	           SEQ_ATNO.NEXTVAL
+	         , SEQ_RVNO.CURRVAL
+	         , ? <!-- 첨부파일의원본명 -->
+	         , ? <!-- 첨부파일의실제업로드명 -->
+	         , ? <!-- 저장경로 -->
+	         , ? <!-- 타입 -->
+	         )
+	</entry>
+	
+	<!-- 조회수증가 -->
+	<entry key="increaseCount">
+		UPDATE
+		       REVIEW
+		   SET COUNT = COUNT + 1
+		 WHERE REVIEW_NO = ?
+	</entry>
+	
+	<!-- 리뷰상세페이지 -->
+	<entry key="selectContentReview">
+		SELECT
+		       A.REVIEW_NO
+		     , A.RES_NO
+		     , A.REVIEW_CONTENT
+		     , A.STAR
+		     , B.RES_NAME
+		  FROM REVIEW A
+          LEFT OUTER JOIN restaurant B ON A.RES_NO = B.RES_NO
+		  LEFT OUTER JOIN attachment C ON A.RES_NO = c.ref_bno AND c.BOARD_TYPE = 'R'
+		 WHERE A.REVIEW_NO = ?
+   </entry>
+	  
+	<!-- 리뷰상세페이지 파일첨부 가져오기 -->
+	<entry key="selectContentReviewFiles">
+		SELECT
+		       REF_BNO
+		     , CHANGE_NAME
+		     , FILE_PATH
+		  FROM ATTACHMENT
+		 WHERE REF_BNO = ?
+   </entry>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+
+</properties>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<entry key="selectListCount">
+		SELECT 
+		       COUNT(*) count
+		  FROM RESTAURANT
+		 WHERE LOCAL_CT = ?
+           AND DLOCAL_CT = ?
+		   AND FOOD_CT = ?
+	</entry>
+	
+	<entry key="selectList">
+		SELECT *
+		FROM (
+		    SELECT ROWNUM RNUM, A.*
+		      FROM ( 
+		             SELECT RES_NO
+		                  , RES_NAME
+		                  , ADDRESS || ' ' || D_ADDRESS "ADDRESS"
+		                  , R_IMG
+		                  , FOOD_CT
+		                  , REVIEW_AVG
+		                  , R.COUNT 
+		                  , NVL(TOTAL_REVIEW, 0) "TOTAL_REVIEW"
+		              FROM RESTAURANT R
+		              LEFT JOIN (
+		                    SELECT RES_NO, ROUND(AVG(STAR),1) "REVIEW_AVG", COUNT(*) "TOTAL_REVIEW"
+		                      FROM REVIEW 
+		                     WHERE RES_NO IN (
+		                                        SELECT RES_NO
+		                                          FROM RESTAURANT 
+		                                         WHERE LOCAL_CT = ?
+		                                           AND DLOCAL_CT = ?
+		                                           AND FOOD_CT = ?
+		                                      )
+		                    GROUP BY RES_NO
+		                    ) USING (RES_NO) 
+		            WHERE LOCAL_CT = ?
+		            AND DLOCAL_CT = ?
+		            AND FOOD_CT = ?
+		            ORDER
+                       BY COUNT DESC
+		           ) A
+		    )
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="insertRes">
+		INSERT
+		  INTO RESTAURANT
+		     (
+		        RES_NO
+              , USER_PWD
+		      , RES_NAME
+		      , CEO
+		      , PERMIT_NO
+		      , ADDRESS
+              , D_ADDRESS
+		      , LOCAL_CT
+		      , DLOCAL_CT
+		      , PHONE
+		      , CELLPHONE
+		      , EMAIL
+		      , APPLY_DATE
+		      , FOOD_CT
+		      , PARKING
+  		      , LONGTITUDE
+		      , LATITUDE
+		      , R_IMG
+		      )
+		 VALUES
+		      (
+		        SEQ_RESNO.NEXTVAL
+              , '1234'
+		      , ?
+		      , ?
+		      , ?
+		      , ?
+              , ?
+		      , ?
+		      , ?
+		      , ?
+		      , ?
+		      , ?
+		      , SYSDATE
+		      , ?
+		      , ?
+		      , ?
+		      , ?
+		      , ?
+		      )
+	</entry>
+	
+	<entry key="insertAttachment">
+		INSERT
+		  INTO ATTACHMENT
+		  (
+		    FILE_NO
+		  , REF_BNO
+		  , ORIGIN_NAME
+		  , CHANGE_NAME
+		  , FILE_PATH
+		  , BOARD_TYPE
+		  )
+		  VALUES
+		  (
+		    SEQ_RESNO.NEXTVAL
+          , SEQ_RESNO.CURRVAL
+		  , ?
+		  , ?
+		  , ?
+		  , 'N'
+		  )
+	</entry>
+
+	<entry key="keywordListCount">
+		SELECT 
+       		   COUNT(*) count
+		  FROM RESTAURANT
+		 WHERE RES_NAME LIKE '%' || ? || '%'
+		    OR LOCAL_CT LIKE '%' || ? || '%'
+		    OR DLOCAL_CT LIKE '%' || ? || '%'
+		    OR FOOD_CT LIKE '%' || ? || '%'
+	</entry>
+	
+	<entry key="keywordList">
+		SELECT *
+		FROM (
+		    SELECT ROWNUM RNUM, A.*
+		      FROM ( 
+		             SELECT RES_NO
+		                  , RES_NAME
+		                  , ADDRESS || ' ' || D_ADDRESS "ADDRESS"
+		                  , R_IMG
+		                  , FOOD_CT
+		                  , REVIEW_AVG
+		                  , R.COUNT 
+		                  , NVL(TOTAL_REVIEW, 0) "TOTAL_REVIEW"
+		              FROM RESTAURANT R
+		              LEFT JOIN (
+                                    SELECT RES_NO, ROUND(AVG(STAR),1) "REVIEW_AVG", COUNT(*) "TOTAL_REVIEW"
+                                      FROM REVIEW 
+                                     WHERE RES_NO IN (
+                                                        SELECT RES_NO
+                                                          FROM RESTAURANT 
+                                                         WHERE RES_NAME LIKE '%' || ? || '%' 
+                                                            OR LOCAL_CT LIKE '%' || ? || '%' 
+                                                            OR DLOCAL_CT LIKE '%' || ? || '%' 
+                                                            OR FOOD_CT LIKE '%' || ? || '%' 
+                                                      )
+                                    GROUP BY RES_NO
+		                    ) USING (RES_NO) 
+		            WHERE RES_NAME LIKE '%' || ? || '%' 
+                      OR LOCAL_CT LIKE '%' || ? || '%' 
+		              OR DLOCAL_CT LIKE '%' || ? || '%' 
+		              OR FOOD_CT LIKE '%' || ? || '%' 
+		            ORDER
+                       BY COUNT DESC
+		           ) A
+		    )
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	 
+	<entry key="insertGood">
+		INSERT 
+		  INTO GOOD
+		     (
+		       RES_NO
+		     , USER_NO
+		     , GOOD_DATE
+		     )
+		SELECT ?
+		     , ? 
+		     , SYSDATE
+		  FROM DUAL 
+		 WHERE EXISTS(SELECT COUNT 
+				        FROM (
+				                  SELECT COUNT(*) "COUNT"
+				                  FROM GOOD
+				                 WHERE RES_NO = ?
+				                   AND USER_NO = ?
+				              )         
+		      WHERE COUNT = 0) 
+	</entry>  
+	
+	<entry key="deleteGood">
+		 DELETE
+		   FROM GOOD
+		 WHERE RES_NO = ?
+		   AND USER_NO = ?
+	</entry>
+	
+	<entry key="selectGoodCount">
+		SELECT
+		 COUNT(*) count
+		  FROM GOOD
+		 WHERE USER_NO = ?
+	</entry>
+	
+	
+	<entry key="selectGoodList">
+		SELECT RES_NO
+		      , RES_NAME
+		      , ADDRESS || ' ' || D_ADDRESS "ADDRESS"
+		      , R_IMG
+		      , PHONE
+		  FROM RESTAURANT
+		  LEFT JOIN GOOD USING (RES_NO)
+		  WHERE USER_NO = ?
+	</entry>
+	
+	
+</properties>

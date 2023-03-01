@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<entry key="loginRest">
+		SELECT
+			   RES_NO
+			 , RES_NAME
+			 , CEO
+			 , PERMIT_NO
+			 , ADDRESS
+			 , D_ADDRESS
+			 , LOCAL_CT
+			 , DLOCAL_CT
+			 , PHONE
+			 , CELLPHONE
+			 , EMAIL
+			 , PARKING
+			 , STATUS
+			 , LONGTITUDE
+			 , LATITUDE
+			 , R_IMG
+			 , OPEN
+			 , CLOSE
+			 , BREAK_S
+			 , BREAK_E
+			 , FOOD_CT
+		 FROM RESTAURANT
+	    WHERE RES_NO=?
+	      AND USER_PWD=?
+	      AND STATUS IN ('Y', 'C')		   
+	</entry>
+	<entry key="updatePwd">
+		UPDATE RESTAURANT
+           SET USER_PWD = ?
+             , STATUS = 'Y'
+         WHERE RES_NO = ?	
+	</entry>
+		
+	<entry key="updateHours">
+		UPDATE RESTAURANT
+           SET OPEN = ?
+             , CLOSE = ?
+             , BREAK_S = ?
+             , BREAK_E = ?
+         WHERE RES_NO = ?		
+	</entry>
+	
+	<entry key="selectRest">
+		SELECT
+			   RES_NO
+			 , RES_NAME
+			 , CEO
+			 , PERMIT_NO
+			 , ADDRESS
+			 , D_ADDRESS
+			 , LOCAL_CT
+			 , DLOCAL_CT
+			 , PHONE
+			 , CELLPHONE
+			 , EMAIL
+			 , PARKING
+			 , STATUS
+			 , LONGTITUDE
+			 , LATITUDE
+			 , R_IMG
+			 , OPEN
+			 , CLOSE
+			 , BREAK_S
+			 , BREAK_E
+			 , FOOD_CT
+		 FROM RESTAURANT
+	    WHERE RES_NO=?
+	      AND STATUS = 'Y'		
+	</entry>
+	<entry key="insertMenu">
+		INSERT
+		  INTO MENU
+		  (
+		    MENU_NO
+		  , RES_NO
+		  , MENU_NAME
+		  , PRICE
+		  , MENU_DES
+		  , M_IMG  
+		  )
+		  VALUES
+		  (
+		    SEQ_MNO.NEXTVAL
+		  , ?
+		  , ?
+		  , ?
+		  , ?
+		  , ?  
+		  )
+	</entry>
+	<entry key="selectMenu">
+		SELECT
+		       RES_NO
+		     , MENU_NO
+		     , MENU_NAME
+		     , PRICE
+		     , MENU_DES
+		     , M_IMG
+		  FROM MENU
+		 WHERE RES_NO=?
+		 ORDER
+		    BY MENU_NO       
+	</entry>
+	<entry key="updateMenu">
+		UPDATE MENU
+           SET MENU_NAME = ?
+             , PRICE = ?
+             , MENU_DES = ?
+             , M_IMG = ?
+         WHERE MENU_NO = ?		
+	</entry>
+	<entry key="updateInfo">
+		UPDATE RESTAURANT
+           SET ADDRESS = ?
+			 , D_ADDRESS = ?
+			 , PHONE = ?
+			 , CELLPHONE = ?
+			 , EMAIL = ?
+			 , PARKING = ?
+			 , R_IMG = ?
+			 , OPEN = ?
+			 , CLOSE = ?
+			 , BREAK_S = ?
+			 , BREAK_E = ?
+			 , FOOD_CT = ?
+         WHERE RES_NO = ?	
+	</entry>
+	<entry key="deleteMenu">
+		DELETE
+		  FROM MENU
+		 WHERE MENU_NO = ? 
+	</entry>
+	<entry key="selectQuestion">
+		SELECT
+		       Q_NO
+		     , CATEGORY
+		     , Q_TITLE
+		     , USER_ID
+		     , Q.STATUS
+		     , TO_CHAR(CREATE_DATE, 'YYYY/MM/DD') "CREATE_DATE"
+		  FROM QUESTION Q
+		  JOIN TB_USER ON (Q_PERSON=USER_NO)
+		 WHERE A_PERSON = ?
+		 ORDER
+		    BY Q.STATUS, CREATE_DATE DESC	
+	</entry>
+	<entry key="selectDetailQuestion">
+		SELECT
+		       Q_NO
+		     , CATEGORY
+		     , Q_TITLE
+		     , USER_ID
+		     , Q.STATUS
+		     , TO_CHAR(CREATE_DATE, 'YYYY/MM/DD') "CREATE_DATE"
+		     , Q_CONTENT
+		     , A_CONTENT
+		  FROM QUESTION Q
+		  JOIN TB_USER ON (Q_PERSON=USER_NO)
+		 WHERE Q_NO = ?
+	</entry>
+	<entry key="updateQuestion">
+		UPDATE QUESTION
+           SET MODIFY_DATE = SYSDATE
+			 , A_DATE = SYSDATE
+			 , STATUS = 'Y'
+			 , A_CONTENT = ?
+         WHERE Q_NO = ?	
+	</entry>
+	<entry key="selectReview">
+		SELECT
+		       REVIEW_NO
+		     , USER_ID
+		     , REVIEW_CONTENT
+		     , STAR
+		     , BOOK_NO
+		     , TO_CHAR(CREATE_DATE, 'YYYY/MM/DD') "CREATE_DATE"
+		     , GOOD
+		  FROM REVIEW
+		  JOIN TB_USER USING (USER_NO)
+		 WHERE RES_NO = ?
+		 ORDER
+		    BY REVIEW_NO DESC		
+	</entry>
+	<entry key="selectNewQuestion">
+		SELECT
+		       Q_NO
+		     , Q_TITLE
+		     , Q_CONTENT
+		     , TO_CHAR(CREATE_DATE, 'YYYY/MM/DD') "CREATE_DATE"
+		  FROM QUESTION 
+		 WHERE A_PERSON = ?
+		   AND STATUS= 'N'
+		 ORDER
+		    BY CREATE_DATE DESC		
+	</entry>
+		<entry key="selectNewReview">
+		SELECT
+		       REVIEW_NO
+		     , TO_CHAR(CREATE_DATE, 'YYYY/MM/DD') "CREATE_DATE"
+		     , REVIEW_CONTENT
+		  FROM REVIEW 
+		 WHERE RES_NO = ?
+		   AND GOOD = 'N'
+		 ORDER
+		    BY CREATE_DATE DESC		
+	</entry>
+	<entry key="selectReviewDetail">
+		SELECT
+		       REVIEW_NO
+		     , USER_ID
+		     , REVIEW_CONTENT
+		     , STAR
+		     , BOOK_NO
+		     , TO_CHAR(CREATE_DATE, 'YYYY/MM/DD') "CREATE_DATE"
+		     , GOOD
+		  FROM REVIEW
+		  JOIN TB_USER USING (USER_NO)
+		 WHERE REVIEW_NO = ?
+	</entry>	
+	<entry key="insertBlack">
+		INSERT
+		  INTO BLACK
+		  (
+		    BLACK_NO
+		  , B_PERSON
+		  , T_PERSON
+		  , BLACK_TITEL
+		  , BLACK_CONTENT
+		  , BLACK_TYPE 
+		  )
+		  VALUES
+		  (
+		    SEQ_MNO.NEXTVAL
+		  , ?
+		  , ?
+		  , '업체 리뷰 신고'
+		  , ?
+		  , 'RV'
+		  )	
+	</entry>
+	<entry key="selectReviewAttachment">
+		SELECT
+		       FILE_NO
+		     , CHANGE_NAME
+		     , FILE_PATH
+		  FROM ATTACHMENT
+		 WHERE REF_BNO = ?
+		   AND STATUS = 'Y'
+	</entry>	
+	<entry key="selectBookList">
+		SELECT
+		       BOOK_NO
+		     , TO_CHAR(BOOK_A, 'YYYY/MM/DD') "BOOK_A"
+		     , BOOK_NAME
+		     , BOOK_DATE
+		     , BOOK_TIME
+		     , STATUS		
+
+		  FROM BOOK
+		 WHERE RES_NO = ?
+		 ORDER
+		    BY BOOK_NO DESC
+	</entry>
+	<entry key="selectBook">
+		SELECT
+		       BOOK_NO
+			 , BOOK_DATE
+			 , BOOK_TIME
+			 , PEOPLE
+		     , BOOK_NAME
+		     , BOOK_PHONE
+		     , EMAIL
+		     , REQUEST
+		     , STATUS
+		  FROM BOOK
+		 WHERE BOOK_NO = ?
+	</entry>
+	<entry key="selectBookMenu">
+		SELECT
+		       BM_NO
+			 , MENU_NAME
+			 , MENU_COUNT
+			 , PRICE
+			 , BM_PRICE
+		  FROM BOOK_MENU
+		  JOIN MENU USING (MENU_NO)
+		 WHERE BOOK_NO = ?
+		 ORDER
+		    BY BM_NO DESC
+	</entry>
+	<entry key="selectPayment">
+		SELECT
+		       PAY_NO
+			 , PAY_DATE
+			 , PAY_OP
+			 , PAY_TOTAL
+		  FROM PAYMENT
+		 WHERE BOOK_NO = ?
+	</entry>
+	<entry key="updateBookStatus">
+		UPDATE BOOK
+           SET MODIFY_DATE = SYSDATE
+			 , STATUS = ?
+         WHERE BOOK_NO = ?	
+	</entry>
+	<entry key="selectNewBook">
+		SELECT
+		       BOOK_NO
+		     , BOOK_NAME
+		     , PEOPLE
+		     , BOOK_DATE
+		     , BOOK_TIME
+		  FROM BOOK 
+		 WHERE RES_NO = ?
+		   AND STATUS = 'B'
+		 ORDER
+		    BY BOOK_NO DESC	
+	</entry>
+	<entry key="selectMonthlyPayment">
+		SELECT
+		       PAY_NO
+		     , BOOK_NO
+		     , TO_CHAR(MODIFY_DATE, 'YYYY/MM/DD') "MODIFY_DATE"
+		     , PAY_TOTAL
+		  FROM PAYMENT P
+		  JOIN BOOK B USING (BOOK_NO) 
+		 WHERE B.RES_NO = ?
+		   AND B.STATUS = 'D'
+		   AND MODIFY_DATE + (INTERVAL '7' DAY) BETWEEN ? AND ?
+		 ORDER
+		    BY MODIFY_DATE ASC
+	</entry>
+	<entry key="insertNotAble">
+		INSERT
+		  INTO NOT_ABLE
+		  (
+		    NOT_NO
+		  , RES_NO
+		  , NOT_YEAR
+		  , NOT_MONTH
+		  , NOT_DATE
+		  )
+		  VALUES
+		  (
+		    SEQ_NANO.NEXTVAL
+		  , ?
+		  , ?
+		  , ?
+		  , ? 
+		  )	
+	</entry>
+	<entry key="selectNotAble">
+		SELECT
+		       NOT_NO
+		     , NOT_DATE
+		  FROM NOT_ABLE 
+		 WHERE RES_NO = ?
+		   AND NOT_YEAR = ?
+		   AND NOT_MONTH = ?
+	</entry>
+	<entry key="deleteNotAble">
+		DELETE
+		  FROM NOT_ABLE
+		 WHERE RES_NO = ?
+		   AND NOT_YEAR=?
+		   AND NOT_MONTH=?
+		   AND NOT_DATE=? 
+	</entry>
+	<entry key="selectBookForCalendar">
+        SELECT
+		       BOOK_NO
+		     , BOOK_DATE
+		  FROM BOOK 
+		 WHERE RES_NO = ?
+		   AND SUBSTR(BOOK_DATE,0,4) = ?
+		   AND SUBSTR(BOOK_DATE,6,2) = ?
+	</entry>
+	<entry key="selectRestReviewAvg">
+		SELECT 
+		       RE.RES_NO "RES_NO"
+		     , RES_NAME
+		     , ADDRESS
+		     , D_ADDRESS
+		     , PHONE
+		     , R_IMG
+		     , OPEN
+		     , CLOSE
+		     , BREAK_S
+		     , BREAK_E
+		     , AVG(STAR) "AVG_STAR"
+		     , RS.COUNT "COUNT"
+		  FROM REVIEW RE
+		  JOIN restaurant RS ON (RE.RES_NO = RS.RES_NO)
+		 WHERE RS.STATUS = 'Y'
+		 GROUP
+		    BY RE.RES_NO
+		     , RES_NAME
+		     , ADDRESS
+		     , D_ADDRESS
+		     , PHONE
+		     , R_IMG
+		     , OPEN
+		     , CLOSE
+		     , BREAK_S
+		     , BREAK_E
+		     , RS.COUNT
+		 ORDER
+		    BY AVG(STAR) DESC
+	</entry>
+	<entry key="selectRestCount">
+		SELECT 
+		       RS.RES_NO
+		     , RES_NAME
+		     , ADDRESS
+		     , D_ADDRESS
+		     , PHONE
+		     , R_IMG
+		     , OPEN
+		     , CLOSE
+		     , BREAK_S
+		     , BREAK_E
+		     , NVL(AVG(STAR), 0) "AVG_STAR"
+		     , RS.COUNT
+		  FROM RESTAURANT RS
+		  LEFT JOIN REVIEW RE ON (RS.RES_NO = RE.RES_NO)
+		 WHERE RS.STATUS = 'Y'
+		 GROUP
+		    BY RS.RES_NO
+		     , RES_NAME
+		     , ADDRESS
+		     , D_ADDRESS
+		     , PHONE
+		     , R_IMG
+		     , OPEN
+		     , CLOSE
+		     , BREAK_S
+		     , BREAK_E
+		     , RS.COUNT
+		 ORDER
+		    BY COUNT DESC
+		     , AVG(STAR) ASC
+	</entry>
+	<entry key="selectCalendarBook">
+		SELECT
+		       BOOK_TIME
+		     , BOOK_NAME
+		     , PEOPLE  
+		  FROM BOOK
+		 WHERE RES_NO = ?
+		   AND BOOK_DATE = ?
+		   AND STATUS IN ('B','D')		   
+	</entry>
+</properties>

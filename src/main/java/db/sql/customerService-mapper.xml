@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	
+	<!-- 공지사항 리스트 -->
+	<entry key="selectMemberNoticeList">
+		SELECT 
+		       NOTICE_NO
+		     , NOTICE_TITLE
+		     , USER_ID <!-- USER_NO으로 조인 -->
+		     , COUNT
+		     , CREATE_DATE
+		  FROM NOTICE N
+		  JOIN TB_USER USING (USER_NO)
+		 WHERE N.STATUS = 'Y'
+		 ORDER
+		    BY NOTICE_NO DESC
+	</entry>
+	
+	<!-- 조회수 증가 -->
+	<entry key="increaseCount">
+		UPDATE NOTICE
+		   SET COUNT = COUNT+1
+		 WHERE NOTICE_NO = ?
+		   AND STATUS = 'Y'
+	</entry>
+	
+	<!-- 공지사항 리스트 상세조회 -->
+	<entry key="selectMemberNoticeDetail">
+		SELECT
+		       NOTICE_NO
+		     , NOTICE_TITLE
+		     , NOTICE_CONTENT
+		     , USER_ID
+		     , CREATE_DATE
+		  FROM NOTICE
+		  JOIN TB_USER USING (USER_NO)
+		 WHERE NOTICE_NO = ?
+	</entry>
+	
+	<!-- 페이징 포함 FAQ 리스트 조회 -->
+	<entry key="selectFAQList">
+		SELECT *
+		  FROM (
+		        SELECT ROWNUM RNUM, A.*
+				  FROM (
+						SELECT 
+						       FAQ_NO
+							 , CATEGORY
+							 , FAQ_TITLE
+							 , FAQ_CONTENT
+						  FROM FAQ
+						 WHERE STATUS = 'Y'
+						   AND WHO = 'U'
+						 ORDER
+						    BY FAQ_NO DESC
+				        ) A
+				
+		  		)
+		  WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<!-- FAQ 리스트 -->
+	<!-- <entry key="selectFAQList">
+		SELECT 
+		       FAQ_NO
+			 , CATEGORY
+			 , FAQ_TITLE
+			 , FAQ_CONTENT
+		  FROM FAQ
+		 WHERE STATUS = 'Y'
+		   AND WHO = 'U'
+		 ORDER
+		    BY FAQ_NO DESC
+	</entry> -->
+	
+	<!-- FAQ 페이징 -->
+	<entry key="selectListCount">
+		SELECT
+		       COUNT(*) "COUNT"
+		  FROM FAQ
+		 WHERE STATUS = 'Y'     
+	</entry>
+	
+	<!-- 1:1문의(업체)리스트 -->
+	<entry key="selectMemberQuestionListR">
+		SELECT
+			   Q_NO
+			 , Q_TITLE
+			 , TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE"
+			 , STATUS
+		  FROM QUESTION
+		 WHERE Q_WHO = 'U'
+		   AND A_WHO = 'R'
+		 ORDER
+		    BY Q_NO DESC
+	</entry>
+	
+	<!-- 1:1문의(관리자)리스트 -->
+	<entry key="selectMemberQuestionListA">
+		SELECT
+			   Q_NO
+			 , Q_TITLE
+			 , TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') "CREATE_DATE"
+			 , STATUS
+		  FROM QUESTION
+		 WHERE Q_WHO = 'U'
+		   AND A_WHO = 'A'
+		 ORDER
+		    BY Q_NO DESC
+	</entry>
+	
+	<!-- 1:1문의(관리자)글쓰기 -->
+	<entry key="insertQuestionAdmin">
+		INSERT
+		  INTO QUESTION
+		     ( 
+		       Q_NO
+		     , CATEGORY
+		     , Q_TITLE
+		     , Q_CONTENT
+		     , Q_PERSON
+		     , Q_WHO
+		     , A_WHO
+		     )
+		VALUES 
+		     (
+		       SEQ_QNO.NEXTVAL
+		     , ? <!-- 사용자가 넘긴 카테고리 -->
+		     , ?
+		     , ?
+		     , ?
+		     , 'U'
+		     , 'A'
+		     )      
+		     
+	</entry>
+	
+	<!-- 1:1문의(관리자)글쓰기 사진첨부 -->
+	<entry key="insertQuestionAttachment">
+		INSERT
+		  INTO ATTACHMENT
+		     (
+		       FILE_NO
+		     , REF_BNO
+		     , ORIGIN_NAME
+		     , CHANGE_NAME
+		     , FILE_PATH
+		     , BOARD_TYPE
+		     )
+	    VALUES
+	         (
+	           SEQ_ATNO.NEXTVAL
+	         , SEQ_QNO.CURRVAL
+	         , ? <!-- 첨부파일의원본명 -->
+	         , ? <!-- 첨부파일의실제업로드명 -->
+	         , ? <!-- 저장경로 -->
+	         , 'Q' <!-- 타입 -->
+	         )
+	</entry>
+	
+	<!-- 1:1문의 상세조회 -->
+	<entry key="selectQuestion">	
+		SELECT 
+		       Q_NO
+		     , CATEGORY
+		     , Q_TITLE
+		     , Q_CONTENT
+		     , A_CONTENT
+		  FROM QUESTION
+		 WHERE Q_NO = ?
+	</entry>	   
+	
+	<!-- 1:1문의 상세조회 사진첨부 -->
+	<entry key="selectAttachment">
+		SELECT
+		       FILE_NO
+		     , ORIGIN_NAME
+		     , CHANGE_NAME
+		     , FILE_PATH
+		     , BOARD_TYPE
+		  FROM ATTACHMENT
+		 WHERE REF_BNO = ?
+	</entry>
+	
+	<!-- 1:1문의 조회수 -->
+	<entry key="increaseCountQ">
+		UPDATE
+		       QUESTION
+		   SET COUNT = COUNT + 1
+		 WHERE Q_NO = ?
+	</entry>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</properties>

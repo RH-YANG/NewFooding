@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+	<!-- 로그인 (로그인 한 회원 전체정보 조회) -->
+ 	<entry key="loginMember">
+ 		SELECT 
+			   USER_NO
+			 , USER_ID
+			 , USER_PWD
+			 , USER_NAME
+			 , NICKNAME
+			 , USER_EMAIL
+			 , USER_PHONE
+			 , GENDER
+			 , BIRTH
+			 , ENROLL_DATE
+			 , MODIFY_DATE
+			 , STATUS
+		  FROM TB_USER
+		 WHERE USER_ID = ?
+		   AND USER_PWD = ?
+		   AND STATUS IN ('Y', 'A')
+	</entry>
+	
+	<!-- 회원가입 -->
+	<entry key="insertMember">
+		INSERT 
+		  INTO TB_USER
+		     (
+		       USER_NO
+		     , USER_ID
+		     , USER_PWD
+			 , USER_NAME
+			 , NICKNAME
+			 , USER_EMAIL
+			 , USER_PHONE
+			 , GENDER
+			 , BIRTH
+		     )
+		VALUES
+		     (
+		       SEQ_UNO.NEXTVAL
+		     , ?
+		     , ?
+			 , ?
+			 , ?
+			 , ?
+			 , ?
+			 , ?
+			 , ?
+		     )
+	</entry>
+	
+	<!-- 아이디 중복체크 -->
+	<entry key="idCheck">
+		SELECT
+			   COUNT(*) "COUNT"
+		  FROM TB_USER
+		 WHERE USER_ID = ? 
+	</entry>
+	
+	<!-- 닉네임 중복체크 -->
+	<entry key="nicknameCheck">
+		SELECT
+		       COUNT(*) "COUNT2"
+		  FROM TB_USER
+		 WHERE NICKNAME = ?
+	</entry>
+	
+	<!-- 회원정보수정 -->
+	<entry key="updateMember">
+		UPDATE TB_USER
+		   SET USER_PWD = ?
+		     , USER_NAME = ?
+		     , NICKNAME = ?
+		     , USER_EMAIL = ?
+		     , USER_PHONE = ?
+		     , GENDER = ?
+		     , BIRTH=?
+		     , MODIFY_DATE = SYSDATE
+		 WHERE USER_ID = ?
+		   AND USER_PWD =?
+	</entry>
+
+	<!-- 회원정보수정(갱신된 회원 객체 다시 조회) -->
+ 	<entry key="selectMember">
+ 		SELECT 
+			   USER_NO
+			 , USER_ID
+			 , USER_PWD
+			 , USER_NAME
+			 , NICKNAME
+			 , USER_EMAIL
+			 , USER_PHONE
+			 , GENDER
+			 , BIRTH
+			 , ENROLL_DATE
+			 , MODIFY_DATE
+			 , STATUS
+		  FROM TB_USER
+		 WHERE USER_ID = ?
+		   AND USER_PWD = ?
+		   AND STATUS IN ('Y', 'A')
+ 	</entry>
+ 	
+ 	<!-- 회원탈퇴 -->
+ 	<entry key="confirmDeleteMember">
+ 		UPDATE TB_USER
+ 		   SET STATUS = 'N'
+ 		     , MODIFY_DATE = SYSDATE
+ 		 WHERE USER_ID = ?
+ 		   AND USER_PWD = ?
+ 	</entry>
+
+	<!-- 적립금 -->
+	<entry key="insertPoint">
+		INSERT 
+	      INTO POINT 
+	    VALUES 
+	  		 (
+	           SEQ_PNO.NEXTVAL
+	         , NULL
+	         , ?   <!-- 회원번호 -->
+	         , NULL
+			 , '회원가입축하' <!-- 적립내용 -->
+			 , 'B' <!-- 적립일 때 -->
+			 , 1000   <!-- pointTrade값 (사용일시 -값을 넣어야한다) -->
+			 , 1000 <!-- 1,4 동일 3,5 동일 -->
+	     	, SYSDATE
+	     	)
+	</entry>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</properties>
